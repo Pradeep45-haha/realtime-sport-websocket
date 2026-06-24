@@ -1,21 +1,30 @@
 import express from "express";
 import { pool } from "../db/db_connect.js";
+import http from "http";
 import PG from "pg";
 import { matchRouter } from "./routes/matches.js";
-const app = express();
-const port = 8000;
+import { attachwss } from "./ws/server.js";
 
+const app = express();
+const server = http.createServer(app);
+const PORT = process.env.SERVER_PORT;
+
+// get db handle
 const client = await pool.connect();
 
 app.use(express.json());
 app.use("/matches", matchRouter);
 
-// app.get("/", (req, res) => {
-//   res.send("Hello World!");
-// });
+const { broadcastMatchCreated } = attachwss(server);
+app.locals.broadcastMatchCreated = broadcastMatchCreated;
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
+
+app.listen(PORT, () => {
+  console.log(`http server is running at http://localhost:${PORT}`);
+  console.log(`websocket server is running at http://localhost:${PORT}/ws`);
 });
 
 await client.query("CREATE SCHEMA IF NOT EXISTS sport");
@@ -48,14 +57,5 @@ TAGS TEXT[],
 METADATA JSONB,
 CreatedAt TIMESTAMPTZ DEFAULT NOW())`,
 );
-
-// const result = await client.query({
-//   rowMode: "array",
-//   text: "SELECT * FROM sport.match",
-// });
-
-// console.log(result.rows);
-
-
 
 export const db = client;

@@ -45,7 +45,7 @@ matchRouter.post("/", async (req, res) => {
     const result = await db.query(
       `INSERT INTO sport.MATCH
    (HomeTeam,AwayTeam,Sport,StartTime,EndTime,CreatedAt,Status,HomeScore,AwayScore)
-   VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
+   VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *`,
       [
         data.data.homeTeam,
         data.data.awayTeam,
@@ -59,8 +59,11 @@ matchRouter.post("/", async (req, res) => {
       ],
     );
     if (result.rowCount === 1) {
+      if (res.app.locals.broadcastmatchcreated) {
+        res.app.locals.broadcastmatchcreated(result.rows);
+      }
       res.status(201).json({
-        message: "Match Created",
+        match: result.rows,
       });
       return;
     }
