@@ -59,7 +59,11 @@ matchRouter.post("/", async (req, res) => {
       ],
     );
     if (result.rowCount === 1) {
-      if (res.app.locals.broadcastmatchcreated) {
+      console.log("rt data send");
+      console.log(req.app.locals.broadcastmatchcreated);
+
+      if (req.app.locals.broadcastmatchcreated) {
+        console.log("rt data send");
         res.app.locals.broadcastmatchcreated(result.rows);
       }
       res.status(201).json({

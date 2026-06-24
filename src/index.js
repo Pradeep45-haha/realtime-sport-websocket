@@ -15,16 +15,18 @@ const client = await pool.connect();
 app.use(express.json());
 app.use("/matches", matchRouter);
 
-const { broadcastMatchCreated } = attachwss(server);
-app.locals.broadcastMatchCreated = broadcastMatchCreated;
+
+const broadcastmatchcreated = attachwss(server);
+console.log(broadcastmatchcreated)
+app.locals.broadcastmatchcreated = broadcastmatchcreated;
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`http server is running at http://localhost:${PORT}`);
-  console.log(`websocket server is running at http://localhost:${PORT}/ws`);
+  console.log(`websocket server is running at ws://localhost:${PORT}/ws`);
 });
 
 await client.query("CREATE SCHEMA IF NOT EXISTS sport");
