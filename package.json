@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-     "dev": "node --watch --env-file=.env ./src/index.js",
+    "dev": "node --watch --env-file=.env ./src/index.js",
     "start": "node ./src/index.js"
   },
   "keywords": [],
@@ -14,6 +14,7 @@
   "dependencies": {
     "dotnet": "^1.1.4",
     "express": "^5.2.1",
-    "pg": "^8.22.0"
+    "pg": "^8.22.0",
+    "zod": "^4.4.3"
   }
 }

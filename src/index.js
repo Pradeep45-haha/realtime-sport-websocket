@@ -1,18 +1,22 @@
 import express from "express";
 import { pool } from "../db/db_connect.js";
 import PG from "pg";
+import { matchRouter } from "./routes/matches.js";
 const app = express();
 const port = 8000;
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+const client = await pool.connect();
+
+app.use(express.json());
+app.use("/matches", matchRouter);
+
+// app.get("/", (req, res) => {
+//   res.send("Hello World!");
+// });
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
-
-const client = await pool.connect();
 
 await client.query("CREATE SCHEMA IF NOT EXISTS sport");
 
@@ -45,9 +49,13 @@ METADATA JSONB,
 CreatedAt TIMESTAMPTZ DEFAULT NOW())`,
 );
 
-const result = await client.query({
-  rowMode: "array",
-  text: "SELECT * FROM sport.match",
-});
+// const result = await client.query({
+//   rowMode: "array",
+//   text: "SELECT * FROM sport.match",
+// });
 
-console.log(result.rows);
+// console.log(result.rows);
+
+
+
+export const db = client;

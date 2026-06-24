@@ -1,0 +1,34 @@
+import { MATCH_STATUS } from "../validation/matches.js";
+
+export function getMatchStatus(startTime, endTime, now = new Date()) {
+  const start = new Date(startTime);
+  const end = new Date(endTime);
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+    return null;
+  }
+
+  if (now >= start && now <= end) {
+    console.log(MATCH_STATUS.LIVE);
+    return MATCH_STATUS.LIVE;
+  }
+  if (now < start) {
+    console.log(MATCH_STATUS.SCHEDULED);
+    return MATCH_STATUS.SCHEDULED;
+  }
+  if (now > end) {
+    console.log(MATCH_STATUS.FINISHED);
+    return MATCH_STATUS.FINISHED;
+  }
+}
+
+export async function syncMatchStatus(match, updateStatus) {
+  const nextStatus = getMatchStatus(match.startTime, match.endTime);
+  if (!nextStatus) {
+    return match.status;
+  }
+  if (match.status !== nextStatus) {
+    await updateStatus(nextStatus);
+    match.status = nextStatus;
+  }
+  return match.status;
+}
