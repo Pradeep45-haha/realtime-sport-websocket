@@ -38,7 +38,7 @@ matchRouter.post("/", async (req, res) => {
   if (!data.success) {
     res
       .status(400)
-      .json({ error: "Invalid Payload", message: data.error.issues });
+      .json({ error: "Invalid Match Payload", message: data.error.issues });
     return;
   }
   try {

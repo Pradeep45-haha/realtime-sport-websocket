@@ -4,6 +4,7 @@ import http from "http";
 import PG from "pg";
 import { matchRouter } from "./routes/matches.js";
 import { attachwss } from "./ws/server.js";
+import { commentryRouter } from "./routes/commentries.js";
 
 const app = express();
 const server = http.createServer(app);
@@ -14,11 +15,12 @@ const client = await pool.connect();
 
 app.use(express.json());
 app.use("/matches", matchRouter);
+app.use("/commentries", commentryRouter);
 
-
-const broadcastmatchcreated = attachwss(server);
-console.log(broadcastmatchcreated)
+const {broadcastmatchcreated,broadcastcommentary} = attachwss(server);
+console.log(broadcastmatchcreated);
 app.locals.broadcastmatchcreated = broadcastmatchcreated;
+app.locals.broadcastcommentary = broadcastcommentary;
 
 app.get("/", (req, res) => {
   res.send("Hello World!");

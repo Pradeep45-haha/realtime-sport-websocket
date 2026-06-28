@@ -51,8 +51,8 @@ commentryRouter.post("/", async (req, res) => {
       ],
     );
     if (result.rowCount === 1) {
-      if (req.app.locals.broadcastmatchcreated) {
-        res.app.locals.broadcastmatchcreated(result.rows);
+      if (req.app.locals.broadcastcommentary) {
+        res.app.locals.broadcastcommentary(id.data.id, result.rows);
       }
       res.status(201).json({
         commentary: result.rows,
